@@ -3,24 +3,24 @@ package main;
 import java.util.*;
 public class Solver {
 	HashSet<BoardConfiguration> boardsSeen = new HashSet<BoardConfiguration>();
-	boolean foundGoal = false;
+	TreeNode foundGoal = null;
 	
 	public TreeNode buildSubtree(TreeNode root){
-	    ArrayList<BoardConfiguration> possibleConfigs = root.value.getPossibleConfigs();
-	    for(BoardConfiguration b: possibleConfigs){ 
-	    	if (boardsSeen.contains(b)||foundGoal) {
+	    ArrayList<BoardMove> possibleConfigs = root.value.getPossibleConfigs();
+	    for(BoardMove b: possibleConfigs){ 
+	    	if (boardsSeen.contains(b.bc)||foundGoal!=null) {
 	            continue;
 	        } 
 	    	else{
 	        	//System.out.println(b.toDisplayString());
-	        	boardsSeen.add(b);
+	        	boardsSeen.add(b.bc);
 	        }
-	    	TreeNode leaf = new TreeNode(b);
-	    	if(Goal.isGoal(b)){
+	    	TreeNode leaf = new TreeNode(b.bc, b.m, root);
+	    	if(Goal.isGoal(b.bc)){
 	    		root.addChild(leaf);
-	    		foundGoal = true;
+	    		foundGoal = leaf;
 	    		System.out.println("Found Goal!!");
-	    		System.out.println(b.toDisplayString());
+	    		System.out.println(b.bc.toDisplayString());
 	    		return root;
 	    	}
 	    	else{
@@ -28,6 +28,13 @@ public class Solver {
 	        }
 	    }
 	    return root;
+	}
+	public void printMovestoGoal(){
+		TreeNode currentNode = foundGoal;
+		while(currentNode!=null){
+			System.out.println(currentNode.edge);
+			currentNode = currentNode.parent;
+		}
 	}
 }
 

@@ -71,9 +71,9 @@ public class BoardConfiguration {
         scan.close();	
         return new BoardConfiguration(width, length, board);
 	}
-	public ArrayList<BoardConfiguration> getPossibleConfigs(){
+	public ArrayList<BoardMove> getPossibleConfigs(){
 		EmptySpaces es = new EmptySpaces(boardWidth, boardHeight, board);
-		ArrayList<BoardConfiguration> possibleConfigs = new ArrayList<BoardConfiguration>();
+		ArrayList<BoardMove> possibleConfigs = new ArrayList<BoardMove>();
 		for(Block b: board){
 			List<Move> moves = es.getPossibleMoves(b);
 			for(Move move: moves){
@@ -83,7 +83,7 @@ public class BoardConfiguration {
 				clonedlist.remove(b);
 				clonedlist.add(clone);
 				BoardConfiguration newbc = new BoardConfiguration(boardWidth, boardHeight, clonedlist);
-				possibleConfigs.add(newbc);
+				possibleConfigs.add(new BoardMove(newbc, move));
 				}
 			}
 		return possibleConfigs;

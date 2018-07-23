@@ -14,7 +14,7 @@ public class Program {
 				BoardConfiguration bc = BoardConfiguration.intial(file);
 				Goal.finalConfig(file2);
 				System.out.println(bc.toDisplayString());
-				TreeNode root = new TreeNode(bc);
+				TreeNode root = new TreeNode(bc, null, null);
 				Solver solver = new Solver();
 				solver.buildSubtree(root);
 				
