@@ -1,5 +1,3 @@
-package main;
-import java.io.*;
 import java.util.*;
 public class EmptySpaces {
 	int[][] board;
@@ -39,11 +37,12 @@ public class EmptySpaces {
 		return true;
 	}
 	private boolean canMoveDown(Block b){
-		if(board.length==b.row+1){
+		int bottomrow = b.row + b.height -1;
+		if(board.length==bottomrow+1){
 			return false;
 		}
 		for(int i=b.col; i<b.col+b.width; i++){
-			if(board[b.row+1][i]==1){
+			if(board[bottomrow+1][i]==1){
 				return false;
 			}
 		}
@@ -61,7 +60,8 @@ public class EmptySpaces {
 		return true;
 	}
 	private boolean canMoveRight(Block b){
-		if(board[0].length==b.col+1){
+		int rightedge = b.col + b.width -1;
+		if(board[0].length==rightedge+1){
 			return false;
 		}
 		for(int i=b.row; i<b.row+b.height; i++){

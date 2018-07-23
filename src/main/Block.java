@@ -1,6 +1,5 @@
-package main;
 
-public class Block implements Cloneable{
+public class Block implements Cloneable, Comparable<Block>{
 	int row;
 	int col;
 	int width;
@@ -11,11 +10,17 @@ public class Block implements Cloneable{
 		this.width = w;
 		this.height = h;
 	}
-	public int hashCode(Block b){
-		return Integer.hashCode(b.width) + Integer.hashCode(b.height);
+	@Override
+	public int hashCode(){
+		return Integer.hashCode(this.width) + Integer.hashCode(this.height);
 	}
-	public boolean equals(Block b1, Block b2){
-		if(b1.width==b2.width && b1.height==b2.height){
+	@Override
+	public boolean equals(Object o){
+		if(!(o instanceof Block)){
+			return false;
+		}
+		Block b2 = (Block) o;
+		if(this.width==b2.width && this.height==b2.height && this.row==b2.row && this.col==b2.col){
 			return true;
 		}
 		return false;
@@ -24,8 +29,18 @@ public class Block implements Cloneable{
 		this.row+=m.rowShift;
 		this.col+=m.colShift;
 	}
+	@Override
+	public String toString(){
+		return this.row + " " + this.col + " " + this.width + " " + this.height;
+	}
 	@Override 
 	public Block clone(){
 		return new Block(this.row, this.col, this.width, this.height);
+	}
+	@Override
+	public int compareTo(Block o) {
+		String otherblock = o.toString();
+		String thisblock = this.toString();
+		return thisblock.compareTo(otherblock);
 	}
 }

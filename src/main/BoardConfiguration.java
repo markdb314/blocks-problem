@@ -1,4 +1,3 @@
-package main;
 import java.io.*;
 import java.util.*;
 
@@ -12,7 +11,7 @@ public class BoardConfiguration {
 		this.boardHeight = bh;
 		this.board = b;
 	}
-	
+	//if no block occupies the row/col return true
 	public boolean isEmpty(int row, int col){
 		boolean foundBlock = false;
 		for (Block block : board) {
@@ -24,7 +23,31 @@ public class BoardConfiguration {
 		}
 		return !foundBlock;
 	}
-		//if no block occupies the row/col return true
+		
+	@Override
+	public int hashCode(){
+		Collections.sort(this.board);
+		String hashString = this.board.toString();
+		int hashCode = hashString.hashCode();
+		System.out.println(hashCode);
+		return hashCode;
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(!(o instanceof BoardConfiguration)){
+			return false;
+		}
+		BoardConfiguration b = (BoardConfiguration) o;
+		Collections.sort(this.board);
+		Collections.sort(b.board);
+		String hashString = this.board.toString();
+		String hashString2 = b.board.toString();
+		if(hashString.equals(hashString2)){
+			return true;
+		}
+		return false;
+	}
 		
 	public static BoardConfiguration intial(FileReader file){
 		//creates a board configuration from the file 
@@ -43,29 +66,10 @@ public class BoardConfiguration {
         	int icol = Integer.parseInt(str.nextToken());
         	Block b = new Block(irow, icol, iwidth, ilength);
         	board.add(b);
-        	
         }
+        scan.close();	
         return new BoardConfiguration(width, length, board);
 	}
-	/*public List<Move> nextMove(){
-		List<Move> possibleMoves = new LinkedList<Move>();
-		for(Block block: board){
-			if(emptySpaces()[block.row+1][block.col]==0){
-				possibleMoves.add(new Move(block, 1, 0));
-			}
-			if(emptySpaces()[block.row][block.col+1]==0){
-				possibleMoves.add(new Move(block, 0, 1));
-			}
-			if(emptySpaces()[block.row-1][block.col]==0){
-				possibleMoves.add(new Move(block, -1, 0));
-			}
-			if(emptySpaces()[block.row][block.col-1]==0){
-				possibleMoves.add(new Move(block, 0, -1));
-			}
-		}
-		return possibleMoves;
-		//returns a list of possible next moves
-	}*/
 	public ArrayList<BoardConfiguration> getPossibleConfigs(){
 		EmptySpaces es = new EmptySpaces(boardWidth, boardHeight, board);
 		ArrayList<BoardConfiguration> possibleConfigs = new ArrayList<BoardConfiguration>();
@@ -79,11 +83,19 @@ public class BoardConfiguration {
 				clonedlist.add(clone);
 				BoardConfiguration newbc = new BoardConfiguration(boardWidth, boardHeight, clonedlist);
 				possibleConfigs.add(newbc);
-					}
+				}
 			}
 		return possibleConfigs;
 	}
+	@Override
 	public String toString(){
+		String result = this.boardWidth + " " + this.boardHeight + "\n";
+		for(Block b: this.board){
+			result+=b.toString()+"\n";
+		}
+		return result;
+	}
+	public String toDisplayString(){
 		String s = "";
 		for(int i = 0; i<boardHeight; i++){
 			for(int j=0; j<boardWidth; j++){
@@ -111,8 +123,5 @@ public class BoardConfiguration {
 			}
 		}
 		return board;
-	}
-	public static void main(String[] args){
-		//checks if BC matches GC
 	}
 }
