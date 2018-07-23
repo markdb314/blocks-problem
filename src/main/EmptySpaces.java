@@ -76,16 +76,16 @@ public class EmptySpaces {
 	public List<Move> getPossibleMoves(Block b){
 		ArrayList<Move> possibleMoves = new ArrayList<Move>();
 		if(canMoveUp(b)==true){
-			possibleMoves.add(new Move(-1, 0));
+			possibleMoves.add(new Move(b.row, b.col, -1, 0));
 		}
 		if(canMoveDown(b)==true){
-			possibleMoves.add(new Move(1, 0));
+			possibleMoves.add(new Move(b.row, b.col, 1, 0));
 		}
 		if(canMoveLeft(b)==true){
-			possibleMoves.add(new Move(0, -1));
+			possibleMoves.add(new Move(b.row, b.col, 0, -1));
 		}
 		if(canMoveRight(b)==true){
-			possibleMoves.add(new Move(0, 1));
+			possibleMoves.add(new Move(b.row, b.col, 0, 1));
 		}
 		return possibleMoves;
 	}

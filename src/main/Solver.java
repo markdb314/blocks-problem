@@ -21,6 +21,7 @@ public class Solver {
 	    		foundGoal = leaf;
 	    		System.out.println("Found Goal!!");
 	    		System.out.println(b.bc.toDisplayString());
+	    		printMovestoGoal();
 	    		return root;
 	    	}
 	    	else{
@@ -31,9 +32,14 @@ public class Solver {
 	}
 	public void printMovestoGoal(){
 		TreeNode currentNode = foundGoal;
-		while(currentNode!=null){
-			System.out.println(currentNode.edge);
+		Stack<Move> moveStack = new Stack<Move>();
+		while(currentNode!=null && currentNode.edge!=null){
+			moveStack.push(currentNode.edge);
 			currentNode = currentNode.parent;
+		}
+		while(!moveStack.isEmpty()){
+			Move m = moveStack.pop();
+			System.out.println(m);
 		}
 	}
 }
