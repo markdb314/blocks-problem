@@ -31,7 +31,6 @@ public class BoardConfiguration {
 		Collections.sort(this.board);
 		String hashString = this.board.toString();
 		int hashCode = hashString.hashCode();
-		System.out.println(hashCode);
 		return hashCode;
 	}
 	
