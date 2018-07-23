@@ -1,0 +1,213 @@
+<html>
+<head>
+    <title>Visualize the problem</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
+
+    <style>
+        .goal-block {
+            background: repeating-linear-gradient(45deg,black,black 10px, white 10px, white 20px);
+            opacity: .2
+        }
+    </style>
+
+    <script>
+        var SIZE_SCALE = 70;
+        var colorCounter = 0;
+
+        $((() => {
+            $("#submit-initial").click((e) => {
+                var inputText = $("#initial-text").val();
+                var result = positionInputParser(inputText);
+
+                $("#blockholder").height(result.trayHeight * SIZE_SCALE).width(result.trayWidth * SIZE_SCALE);
+                $("#blockholder").empty();
+
+                _.each(result.blocks, (block) => {
+                    renderBlock(block, false);
+                });
+                colorCounter = 0;
+            }).click();
+
+            $("#submit-moves").click((e) => {
+                var inputText = $("#moves-text").val();
+                var moves = movesInputParser(inputText);
+                executeMoves(moves);
+            });
+
+            $("#submit-goal").click((e) => {
+                var goalText = $("#goal-text").val();
+                var result = positionInputParser(goalText);
+                $("#blockholder .goal-block").remove();
+
+                _.each(result.blocks, (block) => {
+                    renderBlock(block, true);
+                });
+                colorCounter = 0;
+            }).click();
+
+        }));
+
+        function positionInputParser(inputText) {
+            var result = {
+                blocks: []
+            };
+            var lines = inputText.split("\n");
+            var firstLine = lines.shift();
+            var firstLineParts = firstLine.split(" ");
+
+            if (firstLineParts.length == 2) {
+                result.trayHeight = firstLineParts[0];
+                result.trayWidth = firstLineParts[1];
+            } else {
+                lines.unshift(firstLine);
+            }
+
+            _.each(lines, (line) => {
+                var data = line.split(' ');
+                if (data.length != 4) {
+                    throw "A line didn't have 4 elements";
+                }
+                result.blocks.push({
+                    height: data[0],
+                    width: data[1],
+                    row: data[2],
+                    column: data[3]
+                });
+            });
+            return result;
+        }
+
+        function renderBlock(block, isGoal) {
+            var style = `height: ${block.height * SIZE_SCALE}; width: ${block.width * SIZE_SCALE}; top: ${block.row * SIZE_SCALE}px; left: ${block.column * SIZE_SCALE}px; position: absolute; `;
+            var cssClass = "";
+
+            if (isGoal) {
+                cssClass = "goal-block";
+                
+            } else {
+                style += `background-color: ${getNextColor()}`;
+                cssClass = "regular-block";
+            }
+
+            $("#blockholder").append(`
+                <div style="${style}" class="${cssClass}">
+                    <span class="heightWidth">${block.height} ${block.width}</span>
+                    <span class="rowCol">${block.row} ${block.column}</span>
+                </div>`
+            );
+        }
+
+        function movesInputParser(inputText) {
+            var lines = inputText.split('\n');
+            var result = [];
+
+            _.each(lines, (line) => {
+                var data = line.split(' ');
+                if (data.length != 4) {
+                    throw "A line didn't have 4 elements";
+                }
+                result.push({
+                    initRow: data[0],
+                    initColumn: data[1],
+                    finalRow: data[2],
+                    finalColumn: data[3]
+                });
+            });
+            return result;
+        }
+
+        function findBlockAt(row, column) {
+            var foundBlock = null;
+            $("#blockholder .regular-block").each((index, element) => {
+                var currentRow = element.offsetTop / SIZE_SCALE;
+                var currentColumn = element.offsetLeft / SIZE_SCALE;
+                if (row == currentRow && column == currentColumn) {
+                    foundBlock = element;
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+            return foundBlock;
+        }
+
+        function executeMoves(moves) {
+            console.log("executing move");
+            if (moves.length == 0) return;
+            var move = moves.shift();
+            var block = findBlockAt(move.initRow, move.initColumn);
+            if (!block) {
+                throw "Unable to find block";
+            }
+        
+            // can only move either the row or column, not both
+            var rowMoved = move.initRow != move.finalRow;
+            var columnMoved = move.initColumn != move.finalColumn;
+            if (rowMoved && columnMoved) {
+                alert("Invalid move: Cannot move both a row and column at the same time");
+            }
+            if (!rowMoved && !columnMoved) {
+                alert("Invalid move: Neither row nor column moved");
+            }
+
+            var animation = {};
+            if (rowMoved) {
+                animation.top = `${move.finalRow * SIZE_SCALE}px`;
+            } else {
+                animation.left = `${move.finalColumn * SIZE_SCALE}px`;
+            }
+
+            $(block).animate(animation, 500, () => {
+                $(block).children(".rowCol").html(`${move.finalRow} ${move.finalColumn}`)
+                executeMoves(moves);
+            });
+        }
+
+        function getNextColor() {
+            var colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+            return colors[colorCounter++ % colors.length];
+        }
+
+    </script>
+</head>
+
+<body>
+    <div style="float: left; margin: 10px;">
+        <h3>Initial state</h3>
+        <textarea id="initial-text" rows="20">5 4
+2 1 0 0
+2 1 0 3
+2 1 2 0
+2 1 2 3
+2 2 1 1
+1 2 3 1
+1 1 4 0
+1 1 4 1
+1 1 4 2
+1 1 4 3</textarea><br/>
+        <input id="submit-initial" type="button" value="Submit"/>
+    </div>
+    <div style="float: left; margin: 10px;">
+        <h3>Moves</h3>
+        <textarea id="moves-text" rows="20">1 1 0 1
+3 1 2 1
+4 1 3 1
+4 2 3 2
+4 3 4 2</textarea><br/>
+        <input id="submit-moves" type="button" value="Submit"/>
+    </div>
+
+    <div style="float: left; margin: 10px;">
+        <h3>Goal</h3>
+        <textarea id="goal-text" rows="20">1 1 3 1
+1 1 4 2
+1 1 3 2</textarea><br/>
+        <input id="submit-goal" type="button" value="Submit"/>
+    </div>
+    
+    <br/>
+                        
+    <div id="blockholder" style="border: 2px solid black; position: relative; clear: both;"/>
+</body>
+</html>
