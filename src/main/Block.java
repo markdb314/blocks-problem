@@ -1,3 +1,4 @@
+package main;
 
 public class Block implements Cloneable, Comparable<Block>{
 	int row;

@@ -1,3 +1,5 @@
+package main;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
@@ -10,7 +12,7 @@ public class Program {
 				FileReader file = new FileReader(args[0]);
 				FileReader file2 = new FileReader(args[1]);
 				BoardConfiguration bc = BoardConfiguration.intial(file);
-				Goal.finalConfig(file2);
+				Goal.finalConfig(file);
 				System.out.println(bc.toDisplayString());
 				TreeNode root = new TreeNode(bc);
 				Solver solver = new Solver();

@@ -1,3 +1,5 @@
+package main;
+
 import java.util.*;
 public class Solver {
 	HashSet<BoardConfiguration> boardsSeen = new HashSet<BoardConfiguration>();
