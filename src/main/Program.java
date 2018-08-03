@@ -17,6 +17,7 @@ public class Program {
 				TreeNode root = new TreeNode(bc, null, null);
 				Solver solver = new Solver();
 				solver.buildSubtree(root);
+				System.out.println(solver.subtreeCount);
 				
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block

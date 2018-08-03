@@ -67,7 +67,7 @@ public class EmptySpaces {
 			return false;
 		}
 		for(int i=b.row; i<b.row+b.height; i++){
-			if(board[i][b.col+1]==1){
+			if(board[i][rightedge+1]==1){
 				return false;
 			}
 		}
